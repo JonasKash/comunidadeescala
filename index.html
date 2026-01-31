@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, viewport-fit=cover" />
+  <!-- Evita tela branca antes do CSS/JS carregar -->
+  <style>
+    html, body { background: #000; color: #fff; margin: 0; }
+    #root { min-height: 100vh; }
+  </style>
+  
+  <!-- Preconnect for Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+  <!-- Google Fonts - Inter with display=swap for better performance -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  
+  <!-- DNS Prefetch for external resources -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Comunidade da Escala" />
+  <meta property="og:description" content="Comunidade da Escala" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/A166ed7ad4656498f81c9a98fed5bfe32c.avif" />
+  
+  <!-- Meta Description -->
+  <meta name="description" content="Comunidade da Escala" />
+  
+  <link rel="icon" type="image/avif" href="/A166ed7ad4656498f81c9a98fed5bfe32c.avif" />
+  <title>Comunidade da Escala - Avatares com IA (nova copy)</title>
+  <!-- Meta Pixel (carrega sem quebrar se bloqueado por adblock) -->
+  <script>
+    (function() {
+      try {
+        !function(f,b,e,v,n,t,s){
+          if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];
+          t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s);
+        }(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init','1617611782711228');fbq('track','PageView');
+      } catch (e) {}
+    })();
+  </script>
+  <!-- End Meta Pixel Code -->
+</head>
+
+<body>
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=1617611782711228&ev=PageView&noscript=1" /></noscript>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+  
+  <!-- Performance: Preload critical resources -->
+  <link rel="modulepreload" href="/src/main.jsx" />
+</body>
+
+</html>
