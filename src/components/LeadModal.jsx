@@ -29,7 +29,7 @@ const LeadModal = ({ isOpen, onClose, onSuccess }) => {
         },
         body: JSON.stringify({
           nome,
-          telefone,
+          telefone: telefone.trim() ? `+55 ${telefone.trim()}` : '',
           event_id: eventId,
           ...utmParams,
         }),
@@ -96,15 +96,19 @@ const LeadModal = ({ isOpen, onClose, onSuccess }) => {
 
           <div className="form-group">
             <label htmlFor="telefone">TELEFONE</label>
-            <input
-              type="tel"
-              id="telefone"
-              value={telefone}
-              onChange={(e) => setTelefone(e.target.value)}
-              required
-              placeholder="(00) 00000-0000"
-              disabled={loading}
-            />
+            <div className="input-phone-wrap">
+              <span className="input-phone-prefix" aria-hidden="true">+55 </span>
+              <input
+                type="tel"
+                id="telefone"
+                value={telefone}
+                onChange={(e) => setTelefone(e.target.value)}
+                required
+                placeholder="(00) 90000-0000"
+                disabled={loading}
+                className="input-phone-field"
+              />
+            </div>
           </div>
 
           {error && <div className="form-error">{error}</div>}
@@ -234,6 +238,41 @@ const LeadModal = ({ isOpen, onClose, onSuccess }) => {
 
         .form-group input::placeholder {
           color: rgba(255, 255, 255, 0.4);
+        }
+
+        .input-phone-wrap {
+          display: flex;
+          align-items: center;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 8px;
+          overflow: hidden;
+        }
+        .input-phone-wrap:focus-within {
+          border-color: var(--primary);
+          background: rgba(255, 255, 255, 0.08);
+        }
+        .input-phone-prefix {
+          padding: 1rem 0 1rem 1rem;
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 1rem;
+          user-select: none;
+          flex-shrink: 0;
+        }
+        .input-phone-field {
+          flex: 1;
+          min-width: 0;
+          border: none !important;
+          background: transparent !important;
+          padding: 1rem 1rem 1rem 0.25rem !important;
+          box-shadow: none !important;
+        }
+        .input-phone-field:focus {
+          outline: none;
+        }
+        .input-phone-wrap:has(input:disabled) {
+          opacity: 0.5;
+          cursor: not-allowed;
         }
 
         .form-group input:disabled {
