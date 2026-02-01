@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { sendCtaWebhook } from '../lib/webhook';
 
 const GuaranteeSection = () => {
   const ref = useRef(null);
@@ -9,6 +10,7 @@ const GuaranteeSection = () => {
 
   const handleCTAClick = (e) => {
     e.preventDefault();
+    sendCtaWebhook();
     navigate('/dashboard?from=cta');
   };
 

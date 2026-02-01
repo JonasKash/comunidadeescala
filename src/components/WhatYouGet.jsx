@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { sendCtaWebhook } from '../lib/webhook';
 
 const WhatYouGet = () => {
   const ref = useRef(null);
@@ -10,6 +11,7 @@ const WhatYouGet = () => {
 
   const handleCTAClick = (e) => {
     e.preventDefault();
+    sendCtaWebhook();
     navigate('/dashboard?from=cta');
   };
 

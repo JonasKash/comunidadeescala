@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { sendCtaWebhook } from '../lib/webhook';
 
 const HERO_VIDEOS = [
   '/MARCA%20DA%20AGUA%20PARIS.mp4',
@@ -36,6 +37,7 @@ const Hero = () => {
 
   const handleCTAClick = (e) => {
     e.preventDefault();
+    sendCtaWebhook();
     navigate('/dashboard?from=cta');
   };
 
