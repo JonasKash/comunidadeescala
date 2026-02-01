@@ -82,7 +82,7 @@ function Dashboard() {
   }
 
   const isUnlocked = (title) => {
-    return title === 'COMUNIDADE' || title === 'SUPORTE'
+    return title === 'COMUNIDADE'
   }
 
   const mainList = [
@@ -92,12 +92,6 @@ function Dashboard() {
       bgImage: '/comunidade-cover.jpg',
       link: 'https://discord.com/invite/npu',
     },
-    { 
-      id: 2, 
-      title: 'SUPORTE', 
-      bgImage: '/suporte.jpg',
-      link: 'https://wa.me/5534997101300?text=Ol%C3%A1%20comprei%20o%20curso%20de%20apps%20lucrativos%20e%20quero%20receber%20as%20aulas...',
-    }
   ]
 
   const continueWatching = [
