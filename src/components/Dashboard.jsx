@@ -38,6 +38,20 @@ function Dashboard() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // PageView do Meta Pixel na /dashboard
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'PageView', {
+          content_name: 'Dashboard - Comunidade da Escala',
+          content_category: 'Dashboard',
+        })
+      }
+    } catch (e) {
+      console.error('Erro ao disparar PageView no dashboard:', e)
+    }
+  }, [])
+
   // Quando veio do CTA da página principal (?from=cta): dispara o mesmo pixel InitiateCheckout do formulário
   useEffect(() => {
     if (typeof window === 'undefined') return
