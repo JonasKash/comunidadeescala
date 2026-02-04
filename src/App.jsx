@@ -30,7 +30,7 @@ function HomePage() {
           entry.target.classList.remove('active');
         }
       });
-    }, { 
+    }, {
       threshold: 0.1,
       rootMargin: '0px 0px -50px 0px' // Trigger um pouco antes de entrar na viewport
     });
@@ -83,16 +83,16 @@ function DashboardPage() {
 
 function App() {
   return (
-    <ModalProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <ModalProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/aula" element={<Aula />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
-    </ModalProvider>
+      </ModalProvider>
+    </BrowserRouter>
   )
 }
 

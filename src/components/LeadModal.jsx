@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { getStoredUTMParams, getUTMParams } from '../lib/utm';
 
 const LeadModal = ({ isOpen, onClose, onSuccess }) => {
@@ -7,6 +8,7 @@ const LeadModal = ({ isOpen, onClose, onSuccess }) => {
   const [telefone, setTelefone] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,10 +59,10 @@ const LeadModal = ({ isOpen, onClose, onSuccess }) => {
       if (onSuccess) {
         onSuccess();
       }
-      
+
       onClose();
-      window.location.href = '/dashboard';
-      
+      navigate('/dashboard');
+
       // Limpa o formulário
       setNome('');
       setTelefone('');
@@ -80,7 +82,7 @@ const LeadModal = ({ isOpen, onClose, onSuccess }) => {
         <button className="modal-close" onClick={onClose}>
           <X size={24} />
         </button>
-        
+
         <h2 className="modal-title">PARA PROSSEGUIR PREENCHA COM</h2>
 
         <form onSubmit={handleSubmit} className="modal-form">

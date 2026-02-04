@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
-import { sendCtaWebhook, openCtaWhatsApp } from '../lib/webhook';
+import { useNavigate } from 'react-router-dom';
+import { sendCtaWebhook } from '../lib/webhook';
 
 const HERO_VIDEOS = [
   '/MARCA%20DA%20AGUA%20PARIS.mp4',
@@ -13,13 +14,14 @@ const Hero = () => {
   const [videoIndex, setVideoIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const videoRefs = useRef([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const video = videoRefs.current[videoIndex];
     if (video) {
       video.currentTime = 0;
       video.muted = isMuted;
-      video.play().catch(() => {});
+      video.play().catch(() => { });
     }
   }, [videoIndex]);
 
@@ -36,7 +38,7 @@ const Hero = () => {
   const handleCTAClick = (e) => {
     e.preventDefault();
     sendCtaWebhook();
-    openCtaWhatsApp();
+    navigate('/dashboard');
   };
 
   const containerVariants = {
@@ -133,7 +135,7 @@ const Hero = () => {
                   <div className="hero-story-overlay-bottom" />
                 </div>
               </div>
-              
+
               <motion.button
                 className="btn-cta-lowticket btn-cta-desktop"
                 onClick={handleCTAClick}

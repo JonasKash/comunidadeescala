@@ -1,16 +1,18 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Check } from 'lucide-react';
-import { sendCtaWebhook, openCtaWhatsApp } from '../lib/webhook';
+import { useNavigate } from 'react-router-dom';
+import { sendCtaWebhook } from '../lib/webhook';
 
 const WhatYouGet = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const navigate = useNavigate();
 
   const handleCTAClick = (e) => {
     e.preventDefault();
     sendCtaWebhook();
-    openCtaWhatsApp();
+    navigate('/dashboard');
   };
 
   const benefitsLeft = [

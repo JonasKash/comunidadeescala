@@ -7,13 +7,6 @@ import { getStoredUTMParams, getUTMParams } from './utm';
 
 const WEBHOOK_URL = 'https://wbn.araxa.app/webhook/receive-low-app';
 
-/** Link do WhatsApp para todos os CTAs da página principal */
-export const WHATSAPP_CTA_URL = 'https://wa.me/5534997153467';
-
-export const openCtaWhatsApp = () => {
-  if (typeof window !== 'undefined') window.open(WHATSAPP_CTA_URL, '_blank');
-};
-
 const PIXEL_PARAMS = {
   content_name: 'Comunidade da Escala',
   content_category: 'Comunidade',
