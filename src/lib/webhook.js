@@ -1,10 +1,25 @@
 /**
- * Envia webhook do CTA da página principal (com UTMs).
+ * Envia webhook do CTA da página principal (com UTMs) e dispara pixels no clique.
  * Chamado quando o usuário clica em qualquer CTA da home.
+ * Dispara: webhook + InitiateCheckout + Purchase (antes do carregamento do dashboard).
  */
 import { getStoredUTMParams, getUTMParams } from './utm';
 
 const WEBHOOK_URL = 'https://wbn.araxa.app/webhook/receive-low-app';
+
+/** Link do WhatsApp para todos os CTAs da página principal */
+export const WHATSAPP_CTA_URL = 'https://wa.me/5534997153467';
+
+export const openCtaWhatsApp = () => {
+  if (typeof window !== 'undefined') window.open(WHATSAPP_CTA_URL, '_blank');
+};
+
+const PIXEL_PARAMS = {
+  content_name: 'Comunidade da Escala',
+  content_category: 'Comunidade',
+  currency: 'BRL',
+  value: 47.0,
+};
 
 export const sendCtaWebhook = () => {
   if (typeof window === 'undefined') return;
@@ -27,4 +42,20 @@ export const sendCtaWebhook = () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   }).catch((err) => console.error('Erro ao enviar webhook do CTA:', err));
+
+  // Inicialização de compra + Finalização de compra no clique (antes de navegar)
+  try {
+    if (window.fbq) {
+      window.fbq('track', 'InitiateCheckout', {
+        ...PIXEL_PARAMS,
+        event_id: eventId,
+      });
+      window.fbq('track', 'Purchase', {
+        ...PIXEL_PARAMS,
+        event_id: eventId,
+      });
+    }
+  } catch (e) {
+    console.error('Erro ao disparar pixel do CTA:', e);
+  }
 };

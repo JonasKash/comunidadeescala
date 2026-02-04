@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Volume2, VolumeX } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { sendCtaWebhook } from '../lib/webhook';
+import { sendCtaWebhook, openCtaWhatsApp } from '../lib/webhook';
 
 const HERO_VIDEOS = [
   '/MARCA%20DA%20AGUA%20PARIS.mp4',
@@ -11,7 +10,6 @@ const HERO_VIDEOS = [
 ];
 
 const Hero = () => {
-  const navigate = useNavigate();
   const [videoIndex, setVideoIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const videoRefs = useRef([]);
@@ -38,7 +36,7 @@ const Hero = () => {
   const handleCTAClick = (e) => {
     e.preventDefault();
     sendCtaWebhook();
-    navigate('/dashboard?from=cta');
+    openCtaWhatsApp();
   };
 
   const containerVariants = {
