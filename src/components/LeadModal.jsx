@@ -61,7 +61,7 @@ const LeadModal = ({ isOpen, onClose, onSuccess }) => {
       }
 
       onClose();
-      navigate('/dashboard');
+      window.location.href = 'https://wa.me/5534997101300?text=Ol%C3%A1%2C%20gostaria%20de%20entrar%20na%20comunidade';
 
       // Limpa o formulário
       setNome('');
