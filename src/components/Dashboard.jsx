@@ -1,12 +1,30 @@
 import { useState, useEffect, useRef } from 'react'
 import { getCurrentUser, logout } from '../lib/auth'
-import { Play, Info, LogOut, Lock, X } from 'lucide-react'
+import {
+  Play,
+  Info,
+  LogOut,
+  Lock,
+  X,
+  Home,
+  GraduationCap,
+  Headphones,
+  User,
+  ChevronRight,
+  ChevronDown,
+  Youtube,
+  CheckCircle,
+  ArrowLeft,
+  Settings
+} from 'lucide-react'
 import './Dashboard.css'
 
 function Dashboard() {
   const [user, setUser] = useState(null)
-  const [scrolled, setScrolled] = useState(false)
-  const [showInfoModal, setShowInfoModal] = useState(false)
+  const [selectedCourse, setSelectedCourse] = useState(null)
+  const [selectedLesson, setSelectedLesson] = useState(null)
+  const [activeTab, setActiveTab] = useState('inicio')
+  const [expandedModules, setExpandedModules] = useState({})
   const purchaseFiredRef = useRef(false)
 
   const handleDashboardClick = () => {
@@ -29,13 +47,6 @@ function Dashboard() {
   useEffect(() => {
     const currentUser = getCurrentUser()
     setUser(currentUser)
-
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   // PageView + Inicialização de compra (InitiateCheckout) na /dashboard
@@ -54,257 +65,314 @@ function Dashboard() {
         value: 47.0,
         event_id: eventId,
       })
-      const params = new URLSearchParams(window.location.search)
-      if (params.get('from') === 'cta') {
-        window.history.replaceState({}, '', '/dashboard')
-      }
     } catch (e) {
       console.error('Erro ao disparar pixel no dashboard:', e)
     }
   }, [])
-
-  useEffect(() => {
-    if (!showInfoModal) return
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') setShowInfoModal(false)
-    }
-    document.addEventListener('keydown', handleEscape)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-      document.body.style.overflow = ''
-    }
-  }, [showInfoModal])
 
   const handleLogout = () => {
     logout()
     window.location.href = '/dashboard'
   }
 
-  const isUnlocked = (title) => {
-    return title === 'COMUNIDADE'
+  const courses = [
+    {
+      id: 1,
+      title: 'Gestão de Tráfego',
+      thumbnail: '/comunidade-cover.jpg',
+      modules: [
+        {
+          id: 101,
+          title: 'MasterClass - Contenção',
+          lessons: [
+            { id: 1001, title: 'Introdução ao Tráfego Pago', videoId: 'HRP2OjhLmSM', description: 'Nesta aula você aprenderá os fundamentos básicos para começar sua jornada no tráfego pago.' },
+            { id: 1002, title: 'Configurando sua primeira campanha', videoId: '8hcwr-VoyME', description: 'Passo a passo para subir sua primeira campanha de forma profissional.' },
+          ]
+        },
+        {
+          id: 102,
+          title: 'Tráfego para Delivery',
+          lessons: [
+            { id: 1003, title: 'Estratégia Local', videoId: 'HRP2OjhLmSM', description: 'Como atrair clientes locais para negócios de delivery.' },
+          ]
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: 'Uso da IA',
+      thumbnail: '/CRIAR%20MODELOS.jpg',
+      modules: [
+        {
+          id: 201,
+          title: 'Modelos de Contratos',
+          lessons: [
+            { id: 2001, title: 'IA Generativa: O Futuro', videoId: '8hcwr-VoyME', description: 'Descubra como a inteligência artificial está mudando o mercado digital.' },
+            { id: 2002, title: 'Prompt Engineering', videoId: 'HRP2OjhLmSM', description: 'Aprenda a conversar com a IA para obter os melhores resultados.' },
+          ]
+        }
+      ]
+    }
+  ]
+
+  const handleCourseClick = (course) => {
+    setSelectedCourse(course)
+    // Seleciona a primeira aula por padrão
+    const firstModule = course.modules[0]
+    const firstLesson = firstModule.lessons[0]
+    setSelectedLesson(firstLesson)
+    // Expande o primeiro módulo por padrão
+    setExpandedModules({ [firstModule.id]: true })
   }
 
-  const mainList = [
-    { 
-      id: 1, 
-      title: 'COMUNIDADE', 
-      bgImage: '/comunidade-cover.jpg',
-      link: 'https://discord.com/invite/npu',
-    },
-  ]
+  const handleBackToCourses = () => {
+    setSelectedCourse(null)
+    setSelectedLesson(null)
+  }
 
-  const continueWatching = [
-    { id: 0, title: 'CLONAGEM COM O RUYTER', thumbnail: '/CLONAGEM%20COM%20O%20RUYTEER.jpg', link: 'https://www.youtube.com/watch?v=HRP2OjhLmSM' },
-    { id: 10, title: 'CRIAR MODELOS', thumbnail: '/CRIAR%20MODELOS.jpg', link: 'https://www.youtube.com/watch?v=8hcwr-VoyME' },
-    { id: 1, title: 'JOTA JOTA PODCAST', bgColor: '#1e40af', logo: true },
-    { id: 2, title: 'CRONOGRAMA', bgColor: '#1a1a1a', image: 'calendar' },
-  ]
+  const toggleModule = (moduleId) => {
+    setExpandedModules(prev => ({
+      ...prev,
+      [moduleId]: !prev[moduleId]
+    }))
+  }
 
-  const extraContent = [
-    { id: 4, title: 'RENDA EXTRA', bgColor: '#1a1a1a', image: 'money' },
-    { id: 5, title: 'AULA INAUGURAL', bgColor: '#1a1a1a' },
-    { id: 6, title: 'TIRA DÚVIDAS', bgColor: '#1e40af' },
-    { id: 7, title: 'HOTSEAT', bgColor: '#dc2626' },
-    { id: 8, title: 'MENTORIA', bgColor: '#1a1a1a' },
-  ]
+  const handleLessonSelect = (lesson) => {
+    setSelectedLesson(lesson)
+  }
 
   return (
-    <div className="netflix-dashboard" onClick={handleDashboardClick}>
-      {/* Navigation */}
-      <nav className={`netflix-nav ${scrolled ? 'black' : ''}`}>
-        <div className="nav-left">
-           <div className="brand-logo">COMUNIDADE DA ESCALA</div>
-           <div className="nav-links">
-             <a href="#" className="active">Início</a>
-             <a href="#">Séries</a>
-             <a href="#">Filmes</a>
-             <a href="#">Minha Lista</a>
-           </div>
+    <div className="membriz-dashboard" onClick={handleDashboardClick}>
+      {/* Sidebar Principal */}
+      <aside className="membriz-sidebar">
+        <div className="sidebar-logo">
+          <div className="logo-icon"></div>
         </div>
-        <div className="nav-right">
-           <button onClick={handleLogout} className="icon-btn">
-             <LogOut size={20} />
-           </button>
-           <div className="user-avatar">
-             <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="User" />
-           </div>
-        </div>
-      </nav>
+        <nav className="sidebar-nav">
+          <button
+            className={`sidebar-link ${activeTab === 'cursos' ? 'active' : ''}`}
+            onClick={() => setActiveTab('cursos')}
+            title="Meus Cursos"
+          >
+            <GraduationCap size={22} />
+          </button>
+          <a
+            href="https://wa.me/5534997101300?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20uma%20d%C3%BAvida%20sobre%20a%20comunidade"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sidebar-link"
+            title="Suporte WhatsApp"
+          >
+            <Headphones size={22} />
+          </a>
+        </nav>
+        <button className="sidebar-link logout-btn" onClick={handleLogout}>
+          <LogOut size={22} />
+        </button>
+      </aside>
 
-      {/* Modal Mais Informações (estilo Netflix) */}
-      {showInfoModal && (
-        <div
-          className="netflix-modal-overlay"
-          onClick={() => setShowInfoModal(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="netflix-modal-title"
-        >
-          <div className="netflix-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              className="netflix-modal-close"
-              onClick={() => setShowInfoModal(false)}
-              aria-label="Fechar"
-            >
-              <X size={28} />
-            </button>
-            <h2 id="netflix-modal-title" className="netflix-modal-title">Sobre a Comunidade</h2>
-            <div className="netflix-modal-body">
-              <p>Uma comunidade de pessoas que já estão faturando no digital. Aqui você tem acesso a estratégias validadas, suporte real e um ambiente feito para acelerar seus resultados.</p>
-              <p>Sem enrolação. Sem promessas vazias. Só caminho direto para onde você quer chegar.</p>
-              <p className="netflix-modal-cta">
-                <a href="https://discord.com/invite/npu" target="_blank" rel="noopener noreferrer" className="netflix-modal-btn">
-                  Entrar na Comunidade no Discord
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Hero Section */}
-      <header className="netflix-hero">
-        <div className="hero-backdrop"></div>
-        <div className="hero-content">
-          <h1 className="hero-title">SEJA MUITO<br/>BEM-VINDO(A)</h1>
-          <div className="hero-info">
-             <span className="match-score">98% relevante</span>
-             <span className="year">2025</span>
-             <span className="rating">12+</span>
-          </div>
-          <div className="hero-desc">
-            <p className="hero-desc-p">Uma comunidade de pessoas que já estão faturando no digital, você vai ter acesso a estratégias validadas, suporte real e um ambiente feito para acelerar seus resultados.</p>
-            <p className="hero-desc-p">Sem enrolação. Sem promessas vazias. Só caminho direto para onde você quer chegar.</p>
-          </div>
-          <div className="hero-buttons">
-            <button
-              type="button"
-              className="btn-play"
-              onClick={() => document.getElementById('continuar-assistindo')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              <Play size={24} fill="black" /> Assistir
-            </button>
-            <button type="button" className="btn-info" onClick={() => setShowInfoModal(true)}>
-              <Info size={24} /> Mais Informações
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Content Rows */}
-      <div className="content-rows">
-        
-        {/* Row 1: Acesso Rápido */}
-        <section className="row-section row-main">
-          <div className="row-slider row-slider-main">
-            {mainList.map(item => (
-              <div 
-                key={item.id} 
-                className="netflix-card"
-                onClick={() =>  window.open(item.link, '_blank')}
-              >
-                {item.title === 'COMUNIDADE' ? (
-                  <img src="/discord_342a.1920.webp" alt="Comunidade" className="card-image card-comunidade-img" />
-                ) : (
-                  <img src={item.bgImage} alt={item.title} className="card-image" />
-                )}
-                <div className="card-overlay">
-                  <h4>{item.title}</h4>
+      {/* Main Content Area */}
+      <main className="membriz-main">
+        {/* Top Header */}
+        <header className="membriz-header">
+          <div className="header-left">
+            {selectedCourse ? (
+              <div className="breadcrumb">
+                <span className="course-name">{selectedCourse.title}</span>
+                <button className="btn-back-header" onClick={handleBackToCourses}>
+                  <ArrowLeft size={16} /> Voltar ao Dashboard
+                </button>
+              </div>
+            ) : (
+              <div className="header-search">
+                <div className="menu-btn mobile-only">
+                  <X size={20} />
                 </div>
               </div>
-            ))}
+            )}
           </div>
-        </section>
+          <div className="header-right">
+            <div className="alert-badge mobile-hide">
+              <Info size={16} />
+              <span>Player alternativo carregado para melhor compatibilidade</span>
+              <X size={14} className="close-alert" />
+            </div>
+            <div className="header-user">
+              <span className="user-greeting">Olá, {user?.name || 'Jonas Augusto Vieira'}!</span>
+            </div>
+          </div>
+        </header>
 
-        {/* Row 2: Continuar Assistindo */}
-        <section id="continuar-assistindo" className="row-section row-continue">
-          <h2 className="row-title">Continuar Assistindo</h2>
-          <div className="row-slider row-slider-continue">
-            {continueWatching.map(item => {
-              if (item.thumbnail && item.link) {
-                return (
-                  <div
-                    key={item.id}
-                    className="netflix-card"
-                    onClick={() => window.open(item.link, '_blank')}
-                  >
-                    <img src={item.thumbnail} alt={item.title} className="card-image" />
-                    <div className="card-overlay">
-                      <h4>{item.title}</h4>
+        <div className="scroll-content">
+          {!selectedCourse ? (
+            <>
+              {/* Hero Banner */}
+              <section className="dashboard-hero">
+                <div className="hero-card">
+                  <div className="hero-text">
+                    <h1>Bem-vindo de volta, {user?.name?.split(' ')[0] || 'Jonas'}!</h1>
+                    <p>Continue sua jornada de aprendizado com nossos conteúdos exclusivos</p>
+                    <button className="btn-continue">
+                      <Play size={16} fill="white" /> Continuar Assistindo
+                    </button>
+                  </div>
+                  <div className="hero-decoration">
+                    <div className="circle-bg"></div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Courses Grid */}
+              <section className="courses-section">
+                <h2 className="section-title">Seus Cursos</h2>
+                <div className="courses-grid">
+                  {courses.map(course => (
+                    <div
+                      key={course.id}
+                      className="course-card"
+                      onClick={() => handleCourseClick(course)}
+                    >
+                      <div className="course-thumb">
+                        <img src={course.thumbnail} alt={course.title} />
+                        <div className="course-overlay">
+                          <Play size={32} fill="white" />
+                        </div>
+                      </div>
+                      <div className="course-info">
+                        <h3>{course.title}</h3>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </>
+          ) : (
+            /* Layout de Duas Colunas para Aula */
+            <div className="player-layout">
+              {/* Coluna Esquerda: Playlist */}
+              <div className="lesson-sidebar">
+                {/* Progresso Card */}
+                <div className="progress-card">
+                  <h4>Seu Progresso</h4>
+                  <div className="progress-bar-container">
+                    <div className="progress-text">
+                      <span>Progresso Geral</span>
+                      <span>0%</span>
+                    </div>
+                    <div className="progress-bar-bg">
+                      <div className="progress-bar-fill" style={{ width: '0%' }}></div>
                     </div>
                   </div>
-                )
-              }
-              const unlocked = isUnlocked(item.title)
-              return (
-                <div 
-                  key={item.id} 
-                  className={`netflix-card simple ${!unlocked ? 'locked' : ''}`} 
-                  style={{backgroundColor: item.bgColor}}
-                  onClick={() => {
-                    if (!unlocked) {
-                      return
-                    }
-                  }}
-                >
-                  <div className="card-content-simple">
-                    <h3>{item.title}</h3>
-                  </div>
-                  {!unlocked && (
-                    <div className="lock-overlay">
-                      <Lock size={40} />
+                  <div className="progress-stats">
+                    <div className="stat">
+                      <GraduationCap size={14} /> <span>12 Aulas</span>
                     </div>
-                  )}
-               </div>
-              )
-            })}
-          </div>
-        </section>
-
-        {/* Row 3: Conteúdo Extra */}
-        <section className="row-section">
-          <h2 className="row-title">Todo o Conteúdo</h2>
-          <div className="row-slider">
-            {extraContent.map(item => {
-              const unlocked = isUnlocked(item.title)
-              return (
-                <div 
-                  key={item.id} 
-                  className={`netflix-card simple ${!unlocked ? 'locked' : ''}`} 
-                  style={{backgroundColor: item.bgColor}}
-                  onClick={() => {
-                    if (!unlocked) {
-                      return // Bloqueia o clique
-                    }
-                  }}
-                >
-                  <div className="card-content-simple">
-                     <h3>{item.title}</h3>
-                  </div>
-                  {!unlocked && (
-                    <div className="lock-overlay">
-                      <Lock size={40} />
+                    <div className="stat">
+                      <Play size={14} /> <span>0 Assistidas</span>
                     </div>
-                  )}
-               </div>
-              )
-            })}
-          </div>
-        </section>
+                    <div className="stat">
+                      <CheckCircle size={14} /> <span>0 Concluídas</span>
+                    </div>
+                  </div>
+                </div>
 
-      </div>
-      
-      {/* Footer */}
-      <footer className="netflix-footer">
-        <div className="footer-content">
-          <p>Comunidade da Escala - Feito com carinho</p>
-          <p>&copy; 2025 Comunidade da Escala</p>
+                {/* Lista de Módulos */}
+                <div className="modules-list-container">
+                  <div className="modules-header">
+                    <h3>Módulos e Aulas</h3>
+                  </div>
+                  <div className="modules-scroll">
+                    {selectedCourse.modules.map(module => (
+                      <div key={module.id} className="module-item">
+                        <button
+                          className={`module-trigger ${expandedModules[module.id] ? 'expanded' : ''}`}
+                          onClick={() => toggleModule(module.id)}
+                        >
+                          <div className="module-info-text">
+                            <span className="module-title-text">{module.title}</span>
+                            <span className="module-subtitle">{module.lessons.length} aulas</span>
+                          </div>
+                          <ChevronDown size={18} className="arrow-icon" />
+                        </button>
+                        {expandedModules[module.id] && (
+                          <div className="lessons-container">
+                            {module.lessons.map(lesson => (
+                              <button
+                                key={lesson.id}
+                                className={`lesson-button ${selectedLesson?.id === lesson.id ? 'active' : ''}`}
+                                onClick={() => handleLessonSelect(lesson)}
+                              >
+                                <div className="lesson-indicator">
+                                  {selectedLesson?.id === lesson.id ? <Play size={12} fill="white" /> : <span>{lesson.id % 10}</span>}
+                                </div>
+                                <span className="lesson-title-text">{lesson.title}</span>
+                                <CheckCircle size={14} className="lesson-check" />
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Coluna Direita: Player e Descrição */}
+              <div className="main-player-area">
+                <div className="player-header">
+                  <h2>{selectedLesson?.title}</h2>
+                </div>
+
+                <div className="video-container-internal">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    src={`https://www.youtube.com/embed/${selectedLesson?.videoId}?autoplay=1`}
+                    title={selectedLesson?.title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="video-iframe-internal"
+                  ></iframe>
+                </div>
+
+                <div className="lesson-description-area">
+                  <h3>Descrição da Aula</h3>
+                  <div className="description-content">
+                    <p>{selectedLesson?.description}</p>
+                    <div className="access-links">
+                      <span>Acesse aqui:</span>
+                      <a href="#">{'>'} Modelo 01: Clique aqui</a>
+                      <a href="#">{'>'} Modelo 02: Clique aqui</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="player-footer-controls">
+                  <button className="btn-footer-secondary">
+                    <ChevronRight size={18} style={{ transform: 'rotate(180deg)' }} /> Aula Anterior
+                  </button>
+                  <button className="btn-footer-primary">
+                    Marcar como concluída
+                  </button>
+                  <button className="btn-footer-accent">
+                    Próxima Aula <ChevronRight size={18} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </footer>
+
+        {/* Footer */}
+        <footer className="membriz-footer">
+          <p>© 2025 Membriz. Todos os direitos reservados.</p>
+          <p>Potencializado por Inteligência Artificial</p>
+        </footer>
+      </main>
     </div>
   )
 }
 
 export default Dashboard
+

@@ -9,7 +9,7 @@ const Navbar = () => {
           <Zap color="#22c55e" size={24} fill="#22c55e" />
           <span>Apps<span className="text-highlight">Lucrativos</span></span>
         </Link>
-        <a href="https://wa.me/5534997101300?text=Ol%C3%A1%2C%20gostaria%20de%20entrar%20na%20comunidade" className="btn-nav">Acesso Restrito</a>
+        <Link to="/dashboard" className="btn-nav">Acesso Restrito</Link>
       </div>
       <style>{`
         .navbar {
